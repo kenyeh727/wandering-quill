@@ -36,13 +36,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin
+        console.log("AuthContext: Starting login process...");
+        try {
+            const redirectTo = window.location.origin + window.location.pathname;
+            console.log("AuthContext: Redirecting to:", redirectTo);
+
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: redirectTo
+                }
+            });
+            if (error) {
+                console.error("Supabase Auth Error:", error);
+                alert(`Login failed: ${error.message}`);
+                throw error;
             }
-        });
-        if (error) throw error;
+        } catch (err) {
+            console.error("Catch block error:", err);
+            alert("An unexpected error occurred during login.");
+        }
     };
 
     const logout = async () => {
