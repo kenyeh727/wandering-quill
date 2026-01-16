@@ -1,8 +1,15 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { CoverLetterData, GenerationResult, Source, AnalysisResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-const modelId = "gemini-3-flash-preview"; 
+const getAI = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.warn("API Key is missing. Gemini features will fail.");
+  }
+  return new GoogleGenAI({ apiKey: apiKey || 'dummy-key' });
+};
+
+const modelId = "gemini-2.0-flash-exp";
 
 // Helper to clean JSON string if model wraps it in markdown
 const cleanJson = (text: string): string => {
@@ -29,7 +36,7 @@ export const extractJobDescriptionFromUrl = async (url: string): Promise<{ compa
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: modelId,
       contents: { role: 'user', parts: [{ text: prompt }] },
       config: {
@@ -53,8 +60,8 @@ export const extractJobDescriptionFromUrl = async (url: string): Promise<{ compa
       throw new Error("Cannot access URL");
     }
     return {
-        companyName: parsed.companyName?.trim() || "",
-        jobDescription: text
+      companyName: parsed.companyName?.trim() || "",
+      jobDescription: text
     };
   } catch (error) {
     console.error("URL Extraction Error:", error);
@@ -93,7 +100,7 @@ export const analyzeJobFit = async (data: CoverLetterData): Promise<AnalysisResu
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: modelId,
       contents: { role: 'user', parts: [{ text: prompt }] },
       config: {
@@ -111,7 +118,7 @@ export const analyzeJobFit = async (data: CoverLetterData): Promise<AnalysisResu
     });
 
     const jsonText = cleanJson(response.text || "{}");
-    console.log("Analysis Raw Response:", jsonText); 
+    console.log("Analysis Raw Response:", jsonText);
     const parsed = JSON.parse(jsonText);
 
     return {
@@ -123,10 +130,10 @@ export const analyzeJobFit = async (data: CoverLetterData): Promise<AnalysisResu
   } catch (error) {
     console.error("Analysis Error:", error);
     return {
-        score: 50,
-        pros: ["Could not parse detailed analysis.", "Please review manually."],
-        cons: ["Analysis unavailable due to technical hiccup."],
-        verdict: "The stars were cloudy. Proceed with your own judgment."
+      score: 50,
+      pros: ["Could not parse detailed analysis.", "Please review manually."],
+      cons: ["Analysis unavailable due to technical hiccup."],
+      verdict: "The stars were cloudy. Proceed with your own judgment."
     };
   }
 };
@@ -182,10 +189,10 @@ export const tailorResume = async (data: CoverLetterData): Promise<string> => {
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: modelId,
       contents: { role: 'user', parts: [{ text: promptText }] },
-      config: { 
+      config: {
         temperature: 0.7,
         tools: [{ googleSearch: {} }] // Enable search for the resume too
       }
@@ -245,7 +252,7 @@ export const generateCoverLetter = async (data: CoverLetterData): Promise<{ cont
   }
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: modelId,
       contents: { role: 'user', parts: [{ text: promptText }] },
       config: {
@@ -255,7 +262,7 @@ export const generateCoverLetter = async (data: CoverLetterData): Promise<{ cont
     });
 
     const content = response.text || "Failed to generate content.";
-    
+
     const sources: Source[] = [];
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     if (chunks) {
