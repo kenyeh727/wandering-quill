@@ -38,7 +38,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = async () => {
         console.log("AuthContext: Starting login process...");
         try {
-            const redirectTo = window.location.origin + window.location.pathname;
+            let redirectTo = window.location.origin + window.location.pathname;
+            if (!redirectTo.endsWith('/')) {
+                redirectTo += '/';
+            }
             console.log("AuthContext: Redirecting to:", redirectTo);
 
             const { error } = await supabase.auth.signInWithOAuth({
