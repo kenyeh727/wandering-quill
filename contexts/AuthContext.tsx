@@ -32,16 +32,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
         });
 
+        // Check for specific OAuth errors in URL
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        const error_description = params.get('error_description');
+        if (error && error_description) {
+            console.error("OAuth Error detected:", error, error_description);
+            alert(`Login/Auth Error: ${error_description}`);
+        }
+
         return () => subscription.unsubscribe();
     }, []);
 
     const login = async () => {
         try {
-            const currentUrl = new URL(window.location.href);
-            let path = currentUrl.pathname;
-            if (!path.endsWith('/')) path += '/';
-
-            const redirectTo = `${currentUrl.origin}${path}`;
+            // Ensure we redirect back to the current page (or root/base path)
+            const redirectTo = window.location.origin + window.location.pathname;
             console.log("AuthContext: Redirecting to:", redirectTo);
 
             const { error } = await supabase.auth.signInWithOAuth({
