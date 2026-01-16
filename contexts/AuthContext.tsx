@@ -36,24 +36,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async () => {
-        console.log("AuthContext: Starting login process...");
         try {
-            // 使用 Vite 提供的 BASE_URL 確保在 GitHub Pages 路徑正確
-            const baseUrl = import.meta.env.BASE_URL.endsWith('/')
-                ? import.meta.env.BASE_URL
-                : `${import.meta.env.BASE_URL}/`;
+            const currentUrl = new URL(window.location.href);
+            let path = currentUrl.pathname;
+            if (!path.endsWith('/')) path += '/';
 
-            const redirectTo = `${window.location.origin}${baseUrl}`;
+            const redirectTo = `${currentUrl.origin}${path}`;
             console.log("AuthContext: Redirecting to:", redirectTo);
 
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: redirectTo,
-                    queryParams: {
-                        access_type: 'offline',
-                        prompt: 'consent',
-                    },
+                    queryParams: { prompt: 'select_account' }
                 }
             });
             if (error) {
