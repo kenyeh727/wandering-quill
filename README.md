@@ -76,9 +76,16 @@ This project is configured to automatically deploy to GitHub Pages using GitHub 
 
 ### Secrets Setup
 
-If your deployment requires secrets (e.g., API keys that need to be injected during build), go to **Settings** -> **Secrets and variables** -> **Actions** and add them as Repository Secrets. 
+If your deployment requires secrets (e.g., API keys that need to be injected during build), go to **Settings** -> **Secrets and variables** -> **Actions** and add them as Repository Secrets.
 
-Then update `.github/workflows/deploy.yml` to use them if necessary (though for client-side apps, ensure you understand that these keys will be visible in the browser).
+Required secrets for this project:
+- `VITE_GEMINI_API_KEY`: Your Google Gemini API Key.
+- `VITE_SUPABASE_URL`: Your Supabase Project URL.
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon/Public Key.
+
+Then update `.github/workflows/deploy.yml` to use them if necessary (already configured in the default workflow).
+
+**Important:** For client-side apps (like this one), these keys will be prioritized during the build process and embedded into the application code. Ensure your permissions (especially for Supabase) are correctly configured (Row Level Security) since these keys will be visible to the browser.
 
 ## License
 
