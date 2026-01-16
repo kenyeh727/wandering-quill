@@ -38,16 +38,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = async () => {
         console.log("AuthContext: Starting login process...");
         try {
-            let redirectTo = window.location.origin + window.location.pathname;
-            if (!redirectTo.endsWith('/')) {
-                redirectTo += '/';
-            }
+            // 使用 Vite 提供的 BASE_URL 確保在 GitHub Pages 路徑正確
+            const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+                ? import.meta.env.BASE_URL
+                : `${import.meta.env.BASE_URL}/`;
+
+            const redirectTo = `${window.location.origin}${baseUrl}`;
             console.log("AuthContext: Redirecting to:", redirectTo);
 
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: redirectTo
+                    redirectTo: redirectTo,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
                 }
             });
             if (error) {
