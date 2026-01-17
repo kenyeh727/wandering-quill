@@ -23,45 +23,57 @@ const cleanJson = (text: string): string => {
 };
 
 export const extractJobDescriptionFromUrl = async (url: string): Promise<{ companyName: string, jobDescription: string }> => {
-  const prompt = `
-    Role: Professional Web Scraper & Job Analyst.
-    Task: Access and read the full content of this vacancy URL: ${url}
-    
-    Goal: Identify and extract the following information:
-    1. The Company Name.
-    2. The Full Job Description (Requirements, Responsibilities, About us).
-    
-    Format: Return ONLY a valid JSON object.
-    
-    Constraints:
-    - If the page is behind a login wall (like LinkedIn often is for bots), return {"jobDescription": "ACCESS_DENIED"}.
-    - Ensure the jobDescription is at least 100 characters long to be valid.
-  `;
-
   try {
-    const response = await getAI().models.generateContent({
+    // Phase 1: Use Jina Reader to fetch the page content as Markdown
+    // This is much more robust than letting the model browse directly
+    const jinaUrl = `https://r.jina.ai/${encodeURIComponent(url)}`;
+    const response = await fetch(jinaUrl);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch scroll content.");
+    }
+
+    const pageMarkdown = await response.text();
+
+    // Phase 2: Send the markdown to Gemini to extract structured info
+    const prompt = `
+      Role: Expert Job Analyst.
+      Task: Read the following Job Vacancy content (Markdown) and extract the Company Name and Full Job Description.
+      
+      Content:
+      ${pageMarkdown.substring(0, 15000)} // Truncate to stay within reasonable context window
+      
+      Format: Return ONLY a valid JSON object.
+      Example: {"companyName": "...", "jobDescription": "..."}
+      
+      Constraints:
+      - If you cannot find a clear job description, set "jobDescription" to "NOT_FOUND".
+    `;
+
+    const aiResponse = await getAI().models.generateContent({
       model: modelId,
       contents: { role: 'user', parts: [{ text: prompt }] },
       config: {
-        tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
       }
     });
 
-    const text = response.text || "{}";
+    const text = aiResponse.text || "{}";
     const parsed = JSON.parse(cleanJson(text));
 
     const jobText = parsed.jobDescription?.trim();
-    if (!jobText || jobText === "ACCESS_DENIED" || jobText.length < 50) {
-      throw new Error("Unable to bypass anti-bot protection. Please paste manually.");
+    if (!jobText || jobText === "NOT_FOUND" || jobText.length < 50) {
+      throw new Error("The content seems too sparse to be a job description.");
     }
+
     return {
       companyName: parsed.companyName?.trim() || "",
       jobDescription: jobText
     };
   } catch (error) {
     console.error("URL Extraction Error:", error);
-    throw error;
+    // Re-throw a user-friendly error
+    throw new Error("The magic faded. We couldn't read this scroll (URL). Please paste the details manually.");
   }
 };
 
