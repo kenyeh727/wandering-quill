@@ -1,16 +1,15 @@
-import { GoogleGenAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CoverLetterData, Source, AnalysisResult } from "../types";
 
-// Note: We use @google/generative-ai as it's the more stable/common SDK for AI Studio
 const getAI = () => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     console.error("VITE_GEMINI_API_KEY is missing! Check your environment variables.");
   }
-  return new GoogleGenAI(apiKey || 'dummy-key');
+  return new GoogleGenerativeAI(apiKey || 'dummy-key');
 };
 
-const modelId = "gemini-1.5-flash";
+const modelId = "gemini-2.5-flash-lite";
 
 const cleanJson = (text: string): string => {
   if (!text) return "{}";
@@ -87,7 +86,6 @@ export const generateCoverLetter = async (data: CoverLetterData): Promise<{ cont
 
   try {
     const model = getAI().getGenerativeModel({ model: modelId });
-    // Use search tool if possible, but keeping it simple first to ensure success
     const result = await model.generateContent(prompt);
     const content = result.response.text();
     const sources: Source[] = [];
