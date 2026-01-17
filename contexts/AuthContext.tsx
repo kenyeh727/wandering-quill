@@ -49,6 +49,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Ensure we redirect back to the current page (or root/base path)
             const redirectTo = window.location.origin + window.location.pathname;
             console.log("AuthContext: Redirecting to:", redirectTo);
+            // DEBUG: Ensure no trailing slash issues or double path
+            console.log("Current Origin:", window.location.origin);
+            console.log("Current Pathname:", window.location.pathname);
 
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',

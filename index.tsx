@@ -12,9 +12,7 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
-  <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </React.StrictMode>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 );

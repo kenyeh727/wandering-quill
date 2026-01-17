@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Use a dummy URL if missing to prevent createClient from throwing an error at top-level
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+    ? new URL(import.meta.env.VITE_SUPABASE_URL).origin
+    : 'https://placeholder.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
 
 if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
