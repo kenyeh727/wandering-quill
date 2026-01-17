@@ -1,6 +1,7 @@
 import React from 'react';
 import { Feather, Flame, Trash2, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { translations } from '../translations';
 
 interface NavbarProps {
     onBrandClick: () => void;
@@ -18,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     onLanguageChange
 }) => {
     const { user, login, logout } = useAuth();
+    const t = translations[language as keyof typeof translations] || translations['American English'];
 
     return (
         <nav className="sticky top-0 z-50 bg-[#fdf6e3]/95 backdrop-blur-sm border-b border-[#c5a059] shadow-sm">
@@ -27,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="w-10 h-10 rounded-lg bg-[#2b5876] flex items-center justify-center shadow-lg border-2 border-[#c5a059]">
                         <Feather className="w-6 h-6 text-[#fdf6e3]" />
                     </div>
-                    <h1 className="text-2xl font-display font-bold text-[#2b5876] tracking-tight hidden sm:block">Wandering Quill</h1>
+                    <h1 className="text-2xl font-display font-bold text-[#2b5876] tracking-tight hidden sm:block">{t.brand}</h1>
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-6">
@@ -37,10 +39,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                             <button
                                 onClick={onReset}
                                 className="flex items-center gap-2 text-xs font-bold text-[#c0392b] hover:bg-[#fff0f0] px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-[#ff6b6b]/30"
-                                title="Discard current job and start new"
+                                title={t.discardNew}
                             >
                                 <Trash2 className="w-4 h-4" />
-                                <span className="hidden lg:inline uppercase tracking-wider">New Quest</span>
+                                <span className="hidden lg:inline uppercase tracking-wider">{t.newQuest}</span>
                             </button>
                         )}
 
@@ -63,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         {user ? (
                             <div className="flex items-center gap-3">
                                 <div className="hidden sm:flex flex-col items-end">
-                                    <span className="text-[10px] uppercase tracking-tighter text-[#637b89] font-bold">Explorer</span>
+                                    <span className="text-[10px] uppercase tracking-tighter text-[#637b89] font-bold">{t.explorer}</span>
                                     <span className="text-xs font-medium text-[#2b5876] max-w-[150px] truncate">{user.email}</span>
                                 </div>
                                 <button
@@ -80,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 className="flex items-center gap-2 bg-[#2b5876] text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-[#1a3a52] transition-all transform hover:-translate-y-0.5"
                             >
                                 <LogIn className="w-4 h-4" />
-                                <span>Login</span>
+                                <span>{t.login}</span>
                             </button>
                         )}
                     </div>

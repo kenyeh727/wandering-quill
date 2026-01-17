@@ -3,6 +3,7 @@ import { CoverLetterData, Language, Tone } from '../types';
 import { Compass, Sparkles, Link as LinkIcon, AlertCircle } from 'lucide-react';
 import { Button } from './Button';
 import { extractJobDescriptionFromUrl } from '../services/geminiService';
+import { translations } from '../translations';
 
 interface JobFormProps {
   data: CoverLetterData;
@@ -10,9 +11,11 @@ interface JobFormProps {
   onAnalyze: () => void;
   isAnalyzing: boolean;
   onBack: () => void;
+  language: string;
 }
 
-export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isAnalyzing, onBack }) => {
+export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isAnalyzing, onBack, language }) => {
+  const t = translations[language as keyof typeof translations] || translations['American English'];
   const [url, setUrl] = useState('');
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -45,8 +48,8 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-display font-bold text-[#2c3e50] mb-2">The Destination</h2>
-        <p className="text-[#637b89] italic">Where are you headed? The stars need a target.</p>
+        <h2 className="text-3xl font-display font-bold text-[#2c3e50] mb-2">{t.destinationTitle}</h2>
+        <p className="text-[#637b89] italic">{t.destinationSub}</p>
       </div>
 
       <div className="bg-[#fffdf5] p-8 rounded-xl border border-[#2b5876] shadow-xl relative overflow-hidden">
@@ -57,13 +60,13 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
           <div className="p-3 bg-[#eef5fa] rounded-full border border-[#2b5876]/30 text-[#2b5876]">
             <Compass className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-xl text-[#2c3e50] font-display">Job Details</h3>
+          <h3 className="font-bold text-xl text-[#2c3e50] font-display">{t.jobDetails}</h3>
         </div>
 
         <div className="space-y-6 relative z-10">
           <div>
             <label className={labelClass}>
-              Target Realm (Company)
+              {t.companyName}
             </label>
             <input
               type="text"
@@ -79,7 +82,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
           {/* URL Import Section */}
           <div className="bg-[#f0f9ff] p-4 rounded-lg border border-[#bce3eb]">
             <label className="text-[10px] font-bold text-[#2b5876] uppercase tracking-widest mb-2 block">
-              Auto-fill from Scroll (URL)
+              {t.autoFillUrl}
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -103,7 +106,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
                 variant="outline"
                 className="h-10 px-4 text-xs"
               >
-                Extract
+                {t.extract}
               </Button>
             </div>
             {fetchError && (
@@ -116,7 +119,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
 
           <div>
             <label className={labelClass}>
-              Quest Details (Job Description)
+              {t.jobDescription}
             </label>
             <textarea
               className={`${inputClass} h-64 resize-y custom-scrollbar`}
@@ -130,7 +133,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
 
       <div className="flex gap-4 pt-4 flex-col sm:flex-row">
         <Button variant="ghost" onClick={onBack} className="w-full sm:w-auto">
-          Back to Profile
+          {t.backProfile}
         </Button>
         <Button
           onClick={onAnalyze}
@@ -138,7 +141,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
           className="w-full sm:flex-1 h-12 shadow-lg hover:-translate-y-0.5"
           icon={<Sparkles className="w-4 h-4" />}
         >
-          Consult the Stars (Analyze Fit)
+          {t.analyzeFit}
         </Button>
       </div>
     </div>

@@ -10,6 +10,7 @@ import { generateCoverLetter, analyzeJobFit, tailorResume } from './services/gem
 import { Button } from './components/Button';
 import { Navbar } from './components/Navbar';
 import { useAuth } from './contexts/AuthContext';
+import { translations } from './translations';
 
 type Step = 'profile' | 'job' | 'analysis' | 'cv' | 'letter';
 
@@ -39,6 +40,9 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("Consulting the stars...");
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const { user } = useAuth();
+  const t = translations[formData.language as keyof typeof translations] || translations['American English'];
 
   // --- Persistence Logic ---
 
@@ -139,7 +143,7 @@ const App: React.FC = () => {
   const handleCreateCv = async () => {
     setIsProcessing(true);
     setError(null);
-    setLoadingMessage("Reforging your shield (CV)...");
+    setLoadingMessage(t.cvShield + "...");
     try {
       const result = await tailorResume(formData);
       setTailoredResume(result);
@@ -154,7 +158,7 @@ const App: React.FC = () => {
   const handleCreateCoverLetter = async (instructions?: string) => {
     setIsProcessing(true);
     setError(null);
-    setLoadingMessage("Enchanting the scroll (Cover Letter)...");
+    setLoadingMessage(t.letterScroll + "...");
 
     // Create a temporary data object merging any new instructions
     // We also update state so it's persisted, but use the local variable for the immediate call
@@ -297,6 +301,7 @@ const App: React.FC = () => {
               data={formData}
               onChange={setFormData}
               onNext={() => setStep('job')}
+              language={formData.language}
             />
           )}
 
@@ -307,6 +312,7 @@ const App: React.FC = () => {
               onAnalyze={handleAnalyze}
               isAnalyzing={isProcessing}
               onBack={() => setStep('profile')}
+              language={formData.language}
             />
           )}
 
@@ -320,6 +326,7 @@ const App: React.FC = () => {
                 styleNotes={formData.writingSample}
                 onStyleNotesChange={(val) => setFormData(prev => ({ ...prev, writingSample: val }))}
                 onStartNew={handleResetApplication}
+                language={formData.language}
               />
             </div>
           )}
@@ -330,6 +337,7 @@ const App: React.FC = () => {
               onApprove={() => handleCreateCoverLetter()}
               onRegenerate={() => handleCreateCv()}
               isGenerating={isProcessing}
+              language={formData.language}
             />
           )}
 
@@ -340,6 +348,7 @@ const App: React.FC = () => {
               onRegenerate={(instructions) => handleCreateCoverLetter(instructions)}
               isGenerating={isProcessing}
               onStartOver={handleResetApplication}
+              language={formData.language}
             />
           )}
         </div>
