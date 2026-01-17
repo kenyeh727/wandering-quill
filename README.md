@@ -65,27 +65,19 @@ Preview the production build locally:
 npm run preview
 ```
 
-## Deployment (GitHub Pages)
+## Deployment (Cloudflare Pages)
 
-This project is configured to automatically deploy to GitHub Pages using GitHub Actions.
+This project is configured for deployment on Cloudflare Pages.
 
-1. Go to your repository **Settings** -> **Pages**.
-2. Under **Build and deployment**, select **GitHub Actions** as the source.
-3. Push your changes to the `main` branch.
-4. The deployment workflow will automatically run and deploy your site.
+1.  **Framework Preset:** Select `Vite`.
+2.  **Build Command:** `npm run build`
+3.  **Build Output Directory:** `dist`
+4.  **Environment Variables:** Add the following variables in the Cloudflare dashboard:
+    - `VITE_GEMINI_API_KEY`
+    - `VITE_SUPABASE_URL`
+    - `VITE_SUPABASE_ANON_KEY`
 
-### Secrets Setup
-
-If your deployment requires secrets (e.g., API keys that need to be injected during build), go to **Settings** -> **Secrets and variables** -> **Actions** and add them as Repository Secrets.
-
-Required secrets for this project:
-- `VITE_GEMINI_API_KEY`: Your Google Gemini API Key.
-- `VITE_SUPABASE_URL`: Your Supabase Project URL.
-- `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon/Public Key.
-
-Then update `.github/workflows/deploy.yml` to use them if necessary (already configured in the default workflow).
-
-**Important:** For client-side apps (like this one), these keys will be prioritized during the build process and embedded into the application code. Ensure your permissions (especially for Supabase) are correctly configured (Row Level Security) since these keys will be visible to the browser.
+Cloudflare will automatically pick up the `public/_redirects` file for SPA routing.
 
 ## License
 
