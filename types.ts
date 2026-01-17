@@ -9,7 +9,8 @@ export enum Tone {
 
 export enum Language {
   US_ENGLISH = 'American English',
-  UK_ENGLISH = 'British English (UK/Europe)'
+  UK_ENGLISH = 'British English (UK/Europe)',
+  TRADITIONAL_CHINESE = 'Traditional Chinese (繁體中文)'
 }
 
 export interface CoverLetterData {

@@ -22,7 +22,7 @@ const App: React.FC = () => {
     candidateName: '',
     companyName: '',
     tone: Tone.HUMBLE_CONFIDENT,
-    language: Language.UK_ENGLISH,
+    language: Language.TRADITIONAL_CHINESE,
     writingSample: '',
     education: '',
     researchProjects: ''
