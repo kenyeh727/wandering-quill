@@ -9,30 +9,33 @@ const getAI = () => {
   return new GoogleGenAI({ apiKey: apiKey || 'dummy-key' });
 };
 
-const modelId = "gemini-2.0-flash-exp";
+const modelId = "gemini-1.5-flash";
 
 // Helper to clean JSON string if model wraps it in markdown
 const cleanJson = (text: string): string => {
   if (!text) return "{}";
   let clean = text.trim();
   // Remove markdown code blocks (```json ... ```)
-  clean = clean.replace(/```json/g, '').replace(/```/g, '');
+  if (clean.includes("```")) {
+    clean = clean.replace(/```json/g, '').replace(/```/g, '');
+  }
   return clean.trim();
 };
 
 export const extractJobDescriptionFromUrl = async (url: string): Promise<{ companyName: string, jobDescription: string }> => {
   const prompt = `
-    Role: Web Reader.
-    Task: Read the content from the following URL: ${url}
+    Role: Professional Web Scraper & Job Analyst.
+    Task: Access and read the full content of this vacancy URL: ${url}
     
-    Goal: Extract the Company Name and the Job Description text.
+    Goal: Identify and extract the following information:
+    1. The Company Name.
+    2. The Full Job Description (Requirements, Responsibilities, About us).
     
-    Instructions:
-    1. Use the search tool to find the page content for this specific URL.
-    2. Extract the Company Name.
-    3. Extract the full job description (About the role, Requirements, Responsibilities).
-    4. Return valid JSON.
-    5. If you cannot access the content or if it requires a login that prevents reading the description, return "ACCESS_DENIED" in the jobDescription field.
+    Format: Return ONLY a valid JSON object.
+    
+    Constraints:
+    - If the page is behind a login wall (like LinkedIn often is for bots), return {"jobDescription": "ACCESS_DENIED"}.
+    - Ensure the jobDescription is at least 100 characters long to be valid.
   `;
 
   try {
@@ -42,26 +45,19 @@ export const extractJobDescriptionFromUrl = async (url: string): Promise<{ compa
       config: {
         tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            companyName: { type: Type.STRING },
-            jobDescription: { type: Type.STRING },
-          }
-        }
       }
     });
 
-    const jsonText = cleanJson(response.text || "{}");
-    const parsed = JSON.parse(jsonText);
+    const text = response.text || "{}";
+    const parsed = JSON.parse(cleanJson(text));
 
-    const text = parsed.jobDescription?.trim();
-    if (!text || text.includes("ACCESS_DENIED") || text.length < 20) {
-      throw new Error("Cannot access URL");
+    const jobText = parsed.jobDescription?.trim();
+    if (!jobText || jobText === "ACCESS_DENIED" || jobText.length < 50) {
+      throw new Error("Unable to bypass anti-bot protection. Please paste manually.");
     }
     return {
       companyName: parsed.companyName?.trim() || "",
-      jobDescription: text
+      jobDescription: jobText
     };
   } catch (error) {
     console.error("URL Extraction Error:", error);
