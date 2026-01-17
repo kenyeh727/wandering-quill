@@ -74,32 +74,7 @@ export const JobForm: React.FC<JobFormProps> = ({ data, onChange, onAnalyze, isA
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className={labelClass}>Enchantment Language</label>
-              <select
-                className={inputClass}
-                value={data.language}
-                onChange={(e) => handleChange('language', e.target.value)}
-              >
-                {Object.entries(Language).map(([key, value]) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={labelClass}>Tone of Voice</label>
-              <select
-                className={inputClass}
-                value={data.tone}
-                onChange={(e) => handleChange('tone', e.target.value)}
-              >
-                {Object.entries(Tone).map(([key, value]) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+
 
           {/* URL Import Section */}
           <div className="bg-[#f0f9ff] p-4 rounded-lg border border-[#bce3eb]">

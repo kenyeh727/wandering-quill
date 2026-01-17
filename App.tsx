@@ -209,6 +209,8 @@ const App: React.FC = () => {
         onBrandClick={() => setStep('profile')}
         currentStepIndex={currentStepIndex}
         onReset={handleResetApplication}
+        language={formData.language}
+        onLanguageChange={(lang) => setFormData(prev => ({ ...prev, language: lang }))}
       />
 
       {/* Main Content */}

@@ -6,9 +6,17 @@ interface NavbarProps {
     onBrandClick: () => void;
     currentStepIndex: number;
     onReset: () => void;
+    language: string;
+    onLanguageChange: (lang: any) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onBrandClick, currentStepIndex, onReset }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+    onBrandClick,
+    currentStepIndex,
+    onReset,
+    language,
+    onLanguageChange
+}) => {
     const { user, login, logout } = useAuth();
 
     return (
@@ -36,11 +44,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onBrandClick, currentStepIndex, 
                             </button>
                         )}
 
-                        <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-[#fffdf5] rounded-full border border-[#c5a059] shadow-inner">
-                            <Flame className="w-3 h-3 text-[#ff6b6b] animate-pulse" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#637b89]">Gemini 3.0</span>
+                        <div className="flex items-center gap-2 px-2 py-1 bg-[#fffdf5] rounded-full border border-[#c5a059] shadow-inner">
+                            <Flame className="w-3 h-3 text-[#ff6b6b] ml-1" />
+                            <select
+                                value={language}
+                                onChange={(e) => onLanguageChange(e.target.value)}
+                                className="bg-transparent text-[10px] font-bold uppercase tracking-widest text-[#637b89] outline-none cursor-pointer pr-1"
+                            >
+                                <option value="Traditional Chinese (繁體中文)">繁中</option>
+                                <option value="American English">EN</option>
+                            </select>
                         </div>
                     </div>
+
 
                     {/* Auth Section */}
                     <div className="flex items-center border-l border-[#c5a059] pl-3 md:pl-6 gap-3">
