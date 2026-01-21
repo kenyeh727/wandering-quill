@@ -1,84 +1,84 @@
-# Wandering Quill
+# 🖋️ Wandering Quill
 
-Wandering Quill is a magical letter drafting application built with React, Vite, and Tailwind CSS.
+Wandering Quill is a premium, AI-powered letter drafting application designed to transform your professional narrative into something magical. Built with a modern React stack, it leverages the power of Google's Gemini AI to craft tailored resumes and cover letters.
 
-## Tech Stack
+## ✨ Features
 
-- **Framework:** [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Magical Drafting:** AI-driven content generation for resumes and cover letters.
+- **Quest-Based UI:** A step-by-step journey from profile creation to final draft.
+- **Character Profiles:** Save and manage multiple professional "identities".
+- **Live Link Persistence:** Automatic saving of your progress to local storage.
+- **Bilingual Mastery:** Support for multiple languages with elegant translations.
+
+## 🛠️ Tech Stack
+
+- **Core:** [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **AI Engine:** [Google Gemini AI](https://ai.google.dev/)
+- **Database/Auth:** [Supabase](https://supabase.com/)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
 - **Icons:** [Lucide React](https://lucide.dev/)
-- **AI:** Google Gemini API
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher recommended)
-- npm
+- **Node.js:** v18 or higher (v20+ recommended)
+- **Package Manager:** npm (installed by default with Node.js)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the realm:**
    ```bash
    git clone https://github.com/yourusername/wandering-quill.git
    cd wandering-quill
    ```
 
-2. Install dependencies:
+2. **Gather ingredients (Install dependencies):**
    ```bash
    npm install
    ```
 
-3. Configure environment variables:
-   - Copy `.env.example` to `.env`:
+3. **Empower the quill (Environment Configuration):**
+   - Copy the example environment file:
      ```bash
      cp .env.example .env
      ```
-   - Fill in your API keys in `.env`.
+   - Open `.env` and fill in your magical tokens:
+     - `VITE_GEMINI_API_KEY`: Your Google AI Studio API key.
+     - `VITE_SUPABASE_URL`: Your Supabase project URL.
+     - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key.
 
 ### Development
 
-Start the local development server:
+Start the magical workshop:
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-### Build
+### Building for Production
 
-Build the project for production:
+Compile the spells into a production build:
 
 ```bash
 npm run build
 ```
 
-The output will be in the `dist` directory.
+The optimized artifacts will be placed in the `dist/` directory.
 
-### Preview
+## 🚢 Deployment
 
-Preview the production build locally:
+This project is optimized for **Cloudflare Pages** or **Vercel**.
 
-```bash
-npm run preview
-```
+1. **Framework Preset:** Vite
+2. **Build Command:** `npm run build`
+3. **Output Directory:** `dist`
+4. **Environment Variables:** Ensure all `VITE_*` variables are configured in your deployment platform's dashboard.
 
-## Deployment (Cloudflare Pages)
+## 📜 License
 
-This project is configured for deployment on Cloudflare Pages.
-
-1.  **Framework Preset:** Select `Vite`.
-2.  **Build Command:** `npm run build`
-3.  **Build Output Directory:** `dist`
-4.  **Environment Variables:** Add the following variables in the Cloudflare dashboard:
-    - `VITE_GEMINI_API_KEY`
-    - `VITE_SUPABASE_URL`
-    - `VITE_SUPABASE_ANON_KEY`
-
-Cloudflare will automatically pick up the `public/_redirects` file for SPA routing.
-
-## License
-
-MIT
+This project is licensed under the MIT License - see the LICENSE file for details.
